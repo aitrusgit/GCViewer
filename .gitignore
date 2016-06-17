@@ -9,4 +9,8 @@
 /GCViewer.ofp
 /*.txt
 /*.iml
-/.idea/
+/.idea/.classpath
+.project
+.externalToolBuilders
+maven-eclipse.xml
+.classpath
