@@ -19,5 +19,6 @@ public enum ActionCommands {
     SHOW_README,
     REFRESH,
     WATCH,
-    ZOOM
+    ZOOM, 
+    FILTER
 }

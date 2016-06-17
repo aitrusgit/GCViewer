@@ -10,13 +10,16 @@ import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
+import javax.swing.JSpinner;
 import javax.swing.JToggleButton;
+import javax.swing.SpinnerDateModel;
 
 import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderController;
 import com.tagtraum.perf.gcviewer.ctrl.action.About;
 import com.tagtraum.perf.gcviewer.ctrl.action.Arrange;
 import com.tagtraum.perf.gcviewer.ctrl.action.Exit;
 import com.tagtraum.perf.gcviewer.ctrl.action.Export;
+import com.tagtraum.perf.gcviewer.ctrl.action.Filter;
 import com.tagtraum.perf.gcviewer.ctrl.action.LicenseAction;
 import com.tagtraum.perf.gcviewer.ctrl.action.OSXFullScreen;
 import com.tagtraum.perf.gcviewer.ctrl.action.OpenFile;
@@ -94,6 +97,7 @@ public class GCViewerGuiBuilder {
         actions.put(ActionCommands.ARRANGE.toString(), new Arrange(gui));
         actions.put(ActionCommands.WATCH.toString(), new Watch(controller, gui));
         
+        actions.put(ActionCommands.FILTER.toString(), new Filter(controller, gui));
 
         if (OSXSupport.isOSX()) {
             OSXSupport.initializeMacOSX(actions.get(ActionCommands.ABOUT.toString()), 
@@ -144,6 +148,9 @@ public class GCViewerGuiBuilder {
         recentResourceNamesMenu.getRecentResourceNamesModel().addRecentResourceNamesListener(recentResourceNamesMenuController);
 
         // view menu
+        menuBar.addToViewMenu(actions.get(ActionCommands.FILTER.toString()));
+        menuBar.addSeparatorToViewMenu();
+        
         JCheckBoxMenuItem menuItemShowModelMetricsPanel = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_show_data_panel"), true);
         menuItemShowModelMetricsPanel.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_show_data_panel").charAt(0));
         menuItemShowModelMetricsPanel.setIcon(ImageHelper.createEmptyImageIcon(20, 20));
@@ -310,7 +317,6 @@ public class GCViewerGuiBuilder {
         toolBar.addZoomComboBox(zoomComboBox);
         
         toolBar.addSeparator();
-        
         toolBar.add(actions.get(ActionCommands.ABOUT.toString()));
         
         return toolBar;
