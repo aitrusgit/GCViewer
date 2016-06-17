@@ -1,5 +1,6 @@
 package com.tagtraum.perf.gcviewer.model;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 /**
@@ -9,18 +10,21 @@ import java.time.ZonedDateTime;
  * 
  * @author Claudio Fernandez <claudiof@gmail.com)
  */
-public class TimeframeGCModel extends GCModel {
+public class GCFilteredModel extends GCModel {
     
 	private static final long serialVersionUID = 1L;
 
-	private final ZonedDateTime startingOn;
-    private final ZonedDateTime endingOn;
+	private final LocalDateTime startingOn;
+    private final LocalDateTime endingOn;
+
+	private GCModel fullModel;
     
-    public TimeframeGCModel(ZonedDateTime startingOn, ZonedDateTime endingOn, GCModel fullModel) {
+    public GCFilteredModel(LocalDateTime startingOn, LocalDateTime endingOn, GCModel fullModel) {
     	this.startingOn = startingOn;
     	this.endingOn = endingOn;
-    	
-    	fullModel.getEvents().forEachRemaining(this::add);
+
+    	this.fullModel = fullModel.getUnderlyingModel();
+    	this.fullModel.getEvents().forEachRemaining(this::add);
     }
     
     /**
@@ -35,8 +39,9 @@ public class TimeframeGCModel extends GCModel {
     		return true;
     	}
     	
-		return (startingOn == null || abstractEvent.getDatestamp().isAfter(startingOn)) &&
-    			(endingOn == null || eventDataStamp.isBefore(endingOn));
+		LocalDateTime localEventDateStamp = eventDataStamp.toLocalDateTime();
+		return (startingOn == null || localEventDateStamp.isAfter(startingOn)) &&
+    			(endingOn == null || localEventDateStamp.isBefore(endingOn));
     }
     
     @Override
@@ -46,5 +51,8 @@ public class TimeframeGCModel extends GCModel {
     	}
     }
     
+    public GCModel getUnderlyingModel() {
+    	return this.fullModel;
+    }
 
 }

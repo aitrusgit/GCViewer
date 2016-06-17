@@ -1,25 +1,31 @@
 package com.tagtraum.perf.gcviewer.ctrl.impl;
 
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import javax.swing.JCheckBoxMenuItem;
+
 import com.tagtraum.perf.gcviewer.ctrl.GCModelLoader;
 import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderController;
 import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderGroupTracker;
 import com.tagtraum.perf.gcviewer.ctrl.impl.FileDropTargetListener.DropFlavor;
+import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
 import com.tagtraum.perf.gcviewer.view.GCViewerGuiMenuBar;
 import com.tagtraum.perf.gcviewer.view.model.RecentGCResourcesModel;
 
-import javax.swing.*;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DropTarget;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import com.tagtraum.perf.gcviewer.model.GCFilteredModel;
 
 /**
  * Controller class for {@link GCModelLoader}.
@@ -182,6 +188,15 @@ public class GCModelLoaderControllerImpl implements GCModelLoaderController {
         tracker.execute();
         
         return tracker;
+    }
+    
+    @Override
+    public void filter(GCDocument gcDocument, LocalDateTime start, LocalDateTime end) {
+        for (GCResource gcResource : gcDocument.getGCResources()) {
+        	GCModel model = gcResource.getModel();
+        	GCModel filtered = new GCFilteredModel(start, end, model);
+        	gcResource.setModel(filtered);
+        }
     }
     
     /**

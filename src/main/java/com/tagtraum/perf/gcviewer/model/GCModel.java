@@ -937,6 +937,10 @@ public class GCModel implements Serializable {
                  ? get(0).getDatestamp()
                  : null;
     }
+    
+    public GCModel getUnderlyingModel() {
+    	return this;
+    }
 
     public String toString() {
         return "GCModel[size=" + size() + "]: " + allEvents.toString();

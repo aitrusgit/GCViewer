@@ -1,10 +1,11 @@
 package com.tagtraum.perf.gcviewer.ctrl;
 
+import java.io.File;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
-
-import java.io.File;
-import java.util.List;
 
 /**
  * Controller class for {@link GCModelLoader}.
@@ -38,4 +39,9 @@ public interface GCModelLoaderController {
      * @return tracker to track finish state of all models being loaded
      */
     GCModelLoaderGroupTracker reload(GCDocument gcDocument);
+    
+    /**
+     * Filters all events in the model using the given boundaries
+     */
+    void filter(GCDocument gcDocument, LocalDateTime start, LocalDateTime end);
 }
