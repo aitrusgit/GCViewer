@@ -14,3 +14,4 @@
 .externalToolBuilders
 maven-eclipse.xml
 .classpath
+/bin
