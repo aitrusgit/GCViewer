@@ -24,8 +24,6 @@ import com.tagtraum.perf.gcviewer.math.RegressionLine;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.CollectionType;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
 
-import com.tagtraum.perf.gcviewer.math.LinearLine;
-
 /**
  * Collection of GCEvents.
  *
