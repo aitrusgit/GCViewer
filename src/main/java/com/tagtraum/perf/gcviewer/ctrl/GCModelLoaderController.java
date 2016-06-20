@@ -1,10 +1,10 @@
 package com.tagtraum.perf.gcviewer.ctrl;
 
 import java.io.File;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.filter.FilterPredicate;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 
 /**
@@ -42,6 +42,9 @@ public interface GCModelLoaderController {
     
     /**
      * Filters all events in the model using the given boundaries
+     * 
+     * @param gcDocument document of which models should be reloaded
+     * @param predicate the filter implementation
      */
-    void filter(GCDocument gcDocument, LocalDateTime start, LocalDateTime end);
+    void filter(GCDocument gcDocument, FilterPredicate predicate);
 }

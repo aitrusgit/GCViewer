@@ -938,6 +938,12 @@ public class GCModel implements Serializable {
                  : null;
     }
     
+    public ZonedDateTime getLastDateStamp() {
+        return allEvents.size() > 0
+                 ? get(this.allEvents.size() - 1).getDatestamp()
+                 : null;
+    }
+    
     public GCModel getUnderlyingModel() {
     	return this;
     }

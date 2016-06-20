@@ -5,8 +5,6 @@ import java.awt.dnd.DropTarget;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,14 +16,14 @@ import com.tagtraum.perf.gcviewer.ctrl.GCModelLoader;
 import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderController;
 import com.tagtraum.perf.gcviewer.ctrl.GCModelLoaderGroupTracker;
 import com.tagtraum.perf.gcviewer.ctrl.impl.FileDropTargetListener.DropFlavor;
+import com.tagtraum.perf.gcviewer.model.GCFilteredModel;
 import com.tagtraum.perf.gcviewer.model.GCModel;
 import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.model.filter.FilterPredicate;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.GCViewerGui;
 import com.tagtraum.perf.gcviewer.view.GCViewerGuiMenuBar;
 import com.tagtraum.perf.gcviewer.view.model.RecentGCResourcesModel;
-
-import com.tagtraum.perf.gcviewer.model.GCFilteredModel;
 
 /**
  * Controller class for {@link GCModelLoader}.
@@ -191,10 +189,10 @@ public class GCModelLoaderControllerImpl implements GCModelLoaderController {
     }
     
     @Override
-    public void filter(GCDocument gcDocument, LocalDateTime start, LocalDateTime end) {
+    public void filter(GCDocument gcDocument, FilterPredicate predicate) {
         for (GCResource gcResource : gcDocument.getGCResources()) {
         	GCModel model = gcResource.getModel();
-        	GCModel filtered = new GCFilteredModel(start, end, model);
+        	GCModel filtered = new GCFilteredModel(predicate, model);
         	gcResource.setModel(filtered);
         }
     }
