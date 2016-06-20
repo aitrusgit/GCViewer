@@ -50,4 +50,6 @@ public class ConcurrentGCEvent extends AbstractGCEvent<ConcurrentGCEvent> {
         }
         sb.append(']');
     }
+
+	
 }

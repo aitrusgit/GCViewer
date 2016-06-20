@@ -237,15 +237,21 @@ public class ModelMetricsPanel extends JTabbedPane {
             addEntry(LocalisationHelper.getString("data_panel_slopeafterfullgc"));
             addEntry(LocalisationHelper.getString("data_panel_slopeaftergc"));
             
+            addEntry(LocalisationHelper.getString("data_panel_slopeafterconcgc"));
+            addEntry(LocalisationHelper.getString("data_panel_maxslopeafterconcgc"));
+            
             addEntry(LocalisationHelper.getString("data_panel_memory_initiatingoccupancyfraction"));
             
             addEntry(LocalisationHelper.getString("data_panel_memory_promotion_avg"));
             addEntry(LocalisationHelper.getString("data_panel_memory_promotion_total"));
+            
+            
        }
         
         public void setModel(GCModel model) {
             boolean fullGcDataAvailable = model.getFootprintAfterFullGC().getN() != 0;
             boolean fullGcSlopeDataAvailable = model.getFootprintAfterFullGC().getN() > 1;
+            boolean concGCSlopeDataAvailable = model.isConcurrentGCSlopeDataAvailable();
             boolean gcDataAvailable = model.getFootprintAfterGC().getN() != 0;
             boolean gcSlopeDataAvailable = model.getRelativePostGCIncrease().getN() != 0;
             boolean initiatingOccFractionAvailable = model.getCmsInitiatingOccupancyFraction().getN() > 0;
@@ -340,6 +346,14 @@ public class ModelMetricsPanel extends JTabbedPane {
             updateValue(LocalisationHelper.getString("data_panel_slopeaftergc"),
         			gcSlopeDataAvailable ? footprintSlopeFormatter.format(model.getPostGCSlope()) + "/s" : "n/a",
         			gcSlopeDataAvailable);
+            
+            updateValue(LocalisationHelper.getString("data_panel_slopeafterconcgc"),
+            		concGCSlopeDataAvailable ? footprintSlopeFormatter.format(model.getConcurrentGCSlopeAverage()) + "/s" : "n/a",
+            		concGCSlopeDataAvailable);
+            updateValue(LocalisationHelper.getString("data_panel_maxslopeafterconcgc"),
+            		concGCSlopeDataAvailable ? footprintSlopeFormatter.format(model.getConcurrentGCSlopeMax()) + "/s" : "n/a",
+            		concGCSlopeDataAvailable);
+        	
         	
             updateValue(LocalisationHelper.getString("data_panel_memory_initiatingoccupancyfraction"),
         	        initiatingOccFractionAvailable ? 

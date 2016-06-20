@@ -234,6 +234,10 @@ public abstract class AbstractGCEvent<T extends AbstractGCEvent<T>> implements S
                 || getTypeAsString().indexOf(Type.G1_REMARK.getName()) >= 0;
     }
 
+    public boolean isSweep() {
+    	return getTypeAsString().indexOf(Type.CMS_CONCURRENT_SWEEP.getName()) >= 0;
+	}
+    
     public boolean hasPause() {
         return getExtendedType().getPattern().equals(GcPattern.GC_MEMORY_PAUSE)
                 || getExtendedType().getPattern().equals(GcPattern.GC_PAUSE)

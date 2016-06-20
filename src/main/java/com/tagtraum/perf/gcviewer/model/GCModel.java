@@ -8,7 +8,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.time.Duration;
-import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -24,6 +23,8 @@ import com.tagtraum.perf.gcviewer.math.IntData;
 import com.tagtraum.perf.gcviewer.math.RegressionLine;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.CollectionType;
 import com.tagtraum.perf.gcviewer.model.AbstractGCEvent.Generation;
+
+import com.tagtraum.perf.gcviewer.math.LinearLine;
 
 /**
  * Collection of GCEvents.
@@ -141,6 +142,11 @@ public class GCModel implements Serializable {
     private RegressionLine postFullGCSlope;
     private RegressionLine relativePostFullGCIncrease;
     private URL url;
+    
+    private RegressionLine currentConcGCSlope;
+    private DoubleData concGCSlope;
+
+    private boolean sweeped;
 
     public GCModel() {
         this.allEvents = new ArrayList<AbstractGCEvent<?>>();
@@ -187,6 +193,9 @@ public class GCModel implements Serializable {
         this.postConcurrentCycleUsedHeapSizes = new IntData();
 
         this.promotion = new IntData();
+        
+        this.concGCSlope = new DoubleData();
+        this.currentConcGCSlope = new RegressionLine();
     }
 
     public long getLastModified() {
@@ -368,6 +377,10 @@ public class GCModel implements Serializable {
 
             DoubleData pauses = getDoubleData(concEvent.getExtendedType().getName(), concurrentGcEventPauses);
             pauses.add(concEvent.getPause());
+            
+            if (concEvent.isSweep()) {
+            	this.sweeped = true;
+            }
         }
         else if (abstractEvent instanceof GCEvent) {
 
@@ -428,6 +441,20 @@ public class GCModel implements Serializable {
                     currentRelativePostGCIncrease.reset();
                 }
 
+                currentConcGCSlope.addPoint(event.getTimestamp(), event.getPostUsed());
+            }
+            
+            if (sweeped) {
+            	sweeped = false;
+            	currentConcGCSlope.reset();
+            	currentConcGCSlope.addPoint(event.getTimestamp(), event.getPostUsed());
+            }
+            
+            if (event.isRemark()) {
+            	currentConcGCSlope.addPoint(event.getTimestamp(), event.getPostUsed());
+            	if (currentConcGCSlope.hasPoints() && currentConcGCSlope.isLine()) {
+                    concGCSlope.add(currentConcGCSlope.slope());
+                }
             }
 
         }
@@ -728,6 +755,34 @@ public class GCModel implements Serializable {
         return postGCSlope.average();
     }
 
+    /**
+     * @return The average slope of the regression lines of the memory consumption after
+     * a garbage collection in between <em>concurrent</em> garbage collections.
+     * <p>
+     * The unit is kb/s.
+     */
+    public double getConcurrentGCSlopeAverage() {
+        return concGCSlope.average();
+    }
+    
+    /**
+     * @return The max slope of the regression lines of the memory consumption after
+     * a garbage collection in between <em>concurrent</em> garbage collections.
+     * <p>
+     * The unit is kb/s.
+     */
+    public double getConcurrentGCSlopeMax() {
+        return concGCSlope.getMax();
+    }
+    
+    /**
+     * @return true if there is concurrent GC slope data recorded
+     */
+    public boolean isConcurrentGCSlopeDataAvailable() {
+        return concGCSlope.getN() > 0;
+    }
+    
+    
     public RegressionLine getCurrentPostGCSlope() {
         return currentPostGCSlope;
     }
